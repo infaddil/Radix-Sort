@@ -1,0 +1,46 @@
+import java.util.Arrays;
+
+public class RadixSortFloat {
+    private final double[] array;
+
+    public RadixSortFloat(double[] array) {
+        this.array = array;
+    }
+
+    public void countingSort(double exp, int[] count, double[] output)
+    {
+        Arrays.fill(count, 0);
+
+        for (double value : array) {
+            count[(int) ((value / exp) % 10)]++;
+        }
+
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (int i = array.length - 1; i >= 0; i--) {
+            output[count[(int) ((array[i] / exp) % 10)] - 1] = array[i];
+            count[(int) ((array[i] / exp) % 10)]--;
+        }
+
+        System.arraycopy(output, 0, array, 0, array.length);
+    }
+
+    void sort() {
+        int[] count1 = new int[10];
+        double[] output1 = new double[array.length];
+        int[] count2 = new int[10];
+        double[] output2 = new double[array.length];
+
+        double max = Arrays.stream(array).max().getAsDouble();
+        for (double exp = 1; max / exp > 0; exp *= 10)
+        {
+            if (exp % 2 == 1)
+                countingSort(exp, count1, output1);
+            else
+                countingSort(exp, count2, output2);
+        }
+    }
+}
+
